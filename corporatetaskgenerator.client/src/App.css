@@ -1,0 +1,18 @@
+﻿th, td {
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+.login-container {
+    min-height: calc(100vh - 64px); /* adjust 64px to your header height */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.create-user-container {
+    min-height: calc(100vh - 64px); /* adjust 64px to your header height */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
