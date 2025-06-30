@@ -1,12 +1,14 @@
 using CorporateTaskGenerator.Server.Database;
+using CorporateTaskGenerator.Server.Events;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Task = CorporateTaskGenerator.Server.Models.Task;
-using CorporateTaskGenerator.Server.Events;
 
 namespace CorporateTaskGenerator.Server.Controllers
 {
     [ApiController]
+    //[Authorize] // Require authentication for all actions
     [Route("api/[controller]")]
     public class TaskController : ControllerBase
     {

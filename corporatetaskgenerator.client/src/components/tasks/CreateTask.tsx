@@ -14,7 +14,6 @@ const CreateTask: React.FC = () => {
     const [description, setDescription] = useState("");
     const [message, setMessage] = useState<string | null>(null);
     const [showConfirm, setShowConfirm] = useState(false);
-    const userId = localStorage.getItem("userId");
 
     const handlePriorityChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const value = e.target.value as TaskPriority;
@@ -27,9 +26,11 @@ const CreateTask: React.FC = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setMessage("");
+        const userId = localStorage.getItem("userId");
+
 
         const task: Task = {
-            id: 0, // Assuming the backend will assign the ID
+            id: 0, 
             title,
             priority,
             dueDate: dueDate,

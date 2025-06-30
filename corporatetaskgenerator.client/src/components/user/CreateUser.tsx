@@ -26,6 +26,7 @@ const CreateUser: React.FC = () => {
 
     return (
         <div className="create-user-container">
+            <h2 className="mb-4">Create a User</h2>
             <Form onSubmit={handleSubmit}>
                 <Form.Group className="mb-3" controlId="username">
                     <Form.Control

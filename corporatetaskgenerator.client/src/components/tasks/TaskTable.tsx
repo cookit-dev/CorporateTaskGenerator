@@ -50,8 +50,12 @@ const TaskTable: React.FC = () => {
             search,
         });
 
+        //const token = localStorage.getItem("jwt");
         const res = await fetch(`/api/task?${queryParams}`, {
-            method: "GET"
+            method: "GET"//,
+            //headers: token ? {
+            //    Authorization: `Bearer ${token}`
+            //} : {},
         });
         const json = await res.json();
         setData(json.tasks);
@@ -59,14 +63,14 @@ const TaskTable: React.FC = () => {
         setLoading(false);
     };
 
-    useEffect(() => {
-        fetchTasks();
-    }, [pageIndex, sorting, search]);
-
     const handleDelete = async (id: number) => {
         if (!window.confirm("Are you sure you want to delete this task?")) return;
+        const token = localStorage.getItem("jwt");
         const res = await fetch(`/api/task/${id}`, {
-            method: "DELETE"
+            method: "DELETE"//,
+            //headers: token ? {
+            //    Authorization: `Bearer ${token}`
+            //} : {},
         });
         if (res.ok) {
             fetchTasks();
@@ -74,6 +78,23 @@ const TaskTable: React.FC = () => {
             setMessage("Task deleted successfully!");
         }
     };
+
+    const fetchStatusSummary = async () => {
+        const token = localStorage.getItem("jwt");
+        const res = await fetch("/api/task/status-summary", {
+            //headers: token
+            //    ? {
+            //          Authorization: `Bearer ${token}`
+            //      }
+            //    : {},
+        });
+        const data = await res.json();
+        setStatusSummary(data);
+    };
+
+    useEffect(() => {
+        fetchTasks();
+    }, [pageIndex, sorting, search]);
 
     const columns = useMemo<ColumnDef<Task>[]>(
         () => [
@@ -178,12 +199,6 @@ const TaskTable: React.FC = () => {
 
     const [statusSummary, setStatusSummary] = useState<{ status: string, count: number }[]>([]);
 
-    const fetchStatusSummary = async () => {
-        const res = await fetch("/api/task/status-summary");
-        const data = await res.json();
-        setStatusSummary(data);
-    };
-
     useEffect(() => {
         fetchStatusSummary();
     }, []);
@@ -210,7 +225,7 @@ const TaskTable: React.FC = () => {
 
             <Form.Control
                 type="text"
-                placeholder="Search tasks by Title..."
+                placeholder="Search tasks by Title or Description..."
                 className="mb-3"
                 value={search}
                 onChange={(e) => {
