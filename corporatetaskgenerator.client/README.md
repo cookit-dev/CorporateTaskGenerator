@@ -50,6 +50,7 @@ A full-stack application for managing tasks, built with .NET 8 (backend) and Rea
 
     ```bash
     npm install
+    ```
 
 ## 4. Using the App
 
