@@ -1,8 +1,11 @@
 using CorporateTaskGenerator.Server.Database;
-using CorporateTaskGenerator.Server.Middleware;
-using Microsoft.EntityFrameworkCore;
-//using Microsoft.AspNetCore.Authentication.JwtBearer;
 using CorporateTaskGenerator.Server.Events;
+using CorporateTaskGenerator.Server.Middleware;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,20 +24,27 @@ builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 builder.Logging.AddFile("Logs/app-{Date}.log");
 
-//builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-//      .AddJwtBearer(options =>
-//      {
-//          options.TokenValidationParameters = new TokenValidationParameters
-//          {
-//              ValidateIssuer = true,
-//              ValidateAudience = true,
-//              ValidateLifetime = true,
-//              ValidateIssuerSigningKey = true,
-//              ValidIssuer = "yourIssuer",
-//              ValidAudience = "yourAudience",
-//              IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("yourSuperSecretKey"))
-//          };
-//      });
+var requireAuthPolicy = new AuthorizationPolicyBuilder()
+    .RequireAuthenticatedUser()
+    .Build();
+
+builder.Services.AddAuthorizationBuilder()
+    .SetDefaultPolicy(requireAuthPolicy);
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+      .AddJwtBearer(options =>
+      {
+          options.TokenValidationParameters = new TokenValidationParameters
+          {
+              ValidateIssuer = true,
+              ValidateAudience = true,
+              ValidateLifetime = true,
+              ValidateIssuerSigningKey = true,
+              ValidIssuer = "CorporateTaskGenerator.Server",
+              ValidAudience = "CorporateTaskGenerator.Client",
+              IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("Super_Secret_Key_With_Sufficient_Length"))
+          };
+      });
 
 TaskEvent.HighPriorityTaskChanged += (sender, args) =>
 {
@@ -42,7 +52,6 @@ TaskEvent.HighPriorityTaskChanged += (sender, args) =>
     logger.LogCritical("CRITICAL EVENT: High priority task {Action}. TaskId: {TaskId}, Title: {Title}, UserId: {UserId}",
         args.Action, args.TaskId, args.Title, args.UserId);
 };
-
 
 var app = builder.Build();
 

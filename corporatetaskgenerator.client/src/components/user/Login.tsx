@@ -1,11 +1,12 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button, Form, Alert } from 'react-bootstrap';
 
 const Login: React.FC = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [message, setMessage] = useState<string | null>(null);
+    const navigate = useNavigate();
 
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -20,15 +21,21 @@ const Login: React.FC = () => {
             setMessage("Login successful!");
             // After successful login
             const data = await response.json();
-            localStorage.setItem("userId", data.id); // or data.userId, depending on your API response
-            // Optionally, handle user info here
+
+            if (data.token) {
+                localStorage.setItem("jwt", data.token);
+                localStorage.setItem("userId", data.user.id);
+                navigate("/task-table"); 
+            }
         } else {
             setMessage("Invalid username or password.");
         }
     };
 
     return (
+
         <div className="login-container">
+            <h2 className="mb-4">Login</h2>
             <Form onSubmit={handleSubmit}>
                 <Form.Group className="mb-3" controlId="username">
                     <Form.Control
@@ -60,9 +67,6 @@ const Login: React.FC = () => {
                 </div>
             </Form>
         </div>
-
-
-
     );
 };
 

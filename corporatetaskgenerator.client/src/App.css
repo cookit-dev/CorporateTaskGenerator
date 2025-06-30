@@ -6,12 +6,14 @@
 .login-container {
     min-height: calc(100vh - 64px); /* adjust 64px to your header height */
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
 }
 
 .create-user-container {
     min-height: calc(100vh - 64px); /* adjust 64px to your header height */
+    flex-direction: column;
     display: flex;
     align-items: center;
     justify-content: center;

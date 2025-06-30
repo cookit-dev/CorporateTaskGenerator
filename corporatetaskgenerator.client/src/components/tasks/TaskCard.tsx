@@ -1,5 +1,5 @@
 ﻿import React, { useState } from "react";
-import { Card, Badge, Button, Form, Spinner, Alert } from "react-bootstrap";
+import { Card, Badge, Button, Form, Spinner, Alert, Modal } from "react-bootstrap";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { Task } from "../../models/Task";
@@ -16,8 +16,9 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onUpdate }) => {
     const [form, setForm] = useState<Task>({ ...task });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [priority, setPriority] = useState<TaskPriority>(TaskPriority.Low);
-    const [status, setStatus] = useState<TaskStatus>(TaskStatus.Pending);
+    const [priority, setPriority] = useState<TaskPriority>(task.priority ??  TaskPriority.Low);
+    const [status, setStatus] = useState<TaskStatus>(task.status ?? TaskStatus.Pending);
+    const [showConfirm, setShowConfirm] = useState(false);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
@@ -25,6 +26,14 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onUpdate }) => {
             ...prev,
             [name]: value,
         }));
+    };
+
+    const handlePriorityChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const value = e.target.value as TaskPriority;
+        if (value === TaskPriority.High) {
+            setShowConfirm(true);
+        }
+        setPriority(value);
     };
 
     const handleDateChange = (date: Date | null) => {
@@ -53,6 +62,15 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onUpdate }) => {
         }
     };
 
+    const handleConfirm = () => {
+        setShowConfirm(false);
+    };
+
+    const handleCancel = () => {
+        setShowConfirm(false);
+        setPriority(TaskPriority.Low);
+    };
+
     return (
         <Card className="mb-3 shadow-sm">
             <Card.Body>
@@ -69,7 +87,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onUpdate }) => {
                         </Form.Group>
                         <Form.Group className="mb-3" controlId="taskPriority">
                             <Form.Label>Priority</Form.Label>
-                            <Form.Select value={priority} onChange={e => setPriority(e.target.value as TaskPriority)} required>
+                            <Form.Select value={priority} onChange={handlePriorityChange} required>
                                 {Object.values(TaskPriority).map((value) => (
                                     <option key={value} value={value}>
                                         {value.charAt(0).toUpperCase() + value.slice(1)}
@@ -162,6 +180,23 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onUpdate }) => {
                     </>
                 )}
             </Card.Body>
+
+            <Modal show={showConfirm} onHide={handleCancel} centered>
+                <Modal.Header closeButton>
+                    <Modal.Title>High Priority Confirmation</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    Are you sure you want to change the priority to <b>High</b>?
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleCancel}>
+                        Cancel
+                    </Button>
+                    <Button variant="danger" onClick={handleConfirm}>
+                        Yes, set as High
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         </Card>
     );
 };

@@ -2,6 +2,7 @@ using CorporateTaskGenerator.Server.Database;
 using CorporateTaskGenerator.Server.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace CorporateTaskGenerator.Server.Controllers
 {
@@ -45,8 +46,28 @@ namespace CorporateTaskGenerator.Server.Controllers
                 return Unauthorized(new { message = "Invalid username or password." });
             }
 
-            // For demo: return user info (never return password in production)
-            return Ok(new { user.Id, user.Username });
+            // Generate JWT token
+            var tokenHandler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
+            var key = System.Text.Encoding.ASCII.GetBytes("Super_Secret_Key_With_Sufficient_Length"); 
+            var tokenDescriptor = new Microsoft.IdentityModel.Tokens.SecurityTokenDescriptor
+            {
+                Subject = new System.Security.Claims.ClaimsIdentity(new[]
+                {
+                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                    new Claim(ClaimTypes.Name, user.Username)
+                }),
+                Audience = "CorporateTaskGenerator.Client",
+                Expires = DateTime.UtcNow.AddHours(1),
+                SigningCredentials = new Microsoft.IdentityModel.Tokens.SigningCredentials(
+                    new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(key),
+                    Microsoft.IdentityModel.Tokens.SecurityAlgorithms.HmacSha256Signature
+                )
+            };
+
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            var jwt = tokenHandler.WriteToken(token);
+
+            return Ok(new { token = jwt, user = new { user.Id, user.Username } });
         }
 
         // DTO for login

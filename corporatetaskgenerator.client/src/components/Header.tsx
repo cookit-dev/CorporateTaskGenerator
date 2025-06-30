@@ -1,9 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-const userId = localStorage.getItem("userId");
-
-
 const Header: React.FC = () => (
     <header
         style={{
@@ -44,31 +41,30 @@ const Header: React.FC = () => (
                 Create User
             </Link>
 
-            {userId != "" &&
-                <>
-                    <Link
-                        to="/create-task"
-                        style={{
-                            color: "#fff",
-                            textDecoration: "none",
-                            marginLeft: "1.5rem",
-                            fontSize: "1rem",
-                        }}
-                    >
-                        Create Task
-                    </Link>
-                    <Link
-                        to="/task-table"
-                        style={{
-                            color: "#fff",
-                            textDecoration: "none",
-                            marginLeft: "1.5rem",
-                            fontSize: "1rem",
-                        }}
-                    >
-                        Tasks
-                    </Link></>
-            }
+            {/*Add some kinda auth provider check here to hide this link*/}
+            <Link
+                to="/create-task"
+                style={{
+                    color: "#fff",
+                    textDecoration: "none",
+                    marginLeft: "1.5rem",
+                    fontSize: "1rem",
+                }}
+            >
+                Create Task
+            </Link>
+            <Link
+                to="/task-table"
+                style={{
+                    color: "#fff",
+                    textDecoration: "none",
+                    marginLeft: "1.5rem",
+                    fontSize: "1rem",
+                }}
+            >
+                Tasks
+            </Link>
+
         </nav>
     </header>
 );
