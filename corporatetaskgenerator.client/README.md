@@ -1,54 +1,58 @@
-# React + TypeScript + Vite
+# Corporate Task Generator
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A full-stack application for managing tasks, built with .NET 8 (backend) and React (frontend).
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Prerequisites
 
-## Expanding the ESLint configuration
+- [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
+- [Node.js (LTS)](https://nodejs.org/)
+- [npm](https://www.npmjs.com/) (comes with Node.js)
+- [SQL Server](https://www.microsoft.com/en-us/sql-server/sql-server-downloads) or [SQLite](https://www.sqlite.org/download.html) (depending on your backend configuration)
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+---
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+## 1. Clone the Repository
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 2. Set Up the Database
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### Using Entity Framework Core (SQL Server or SQLite)
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+1. Navigate to the backend project directory (e.g., `CorporateTaskGenerator.Server`):
+
+    ```bash
+    cd CorporateTaskGenerator.Server
+    ```
+
+2. Create the database and apply migrations:
+
+    ```bash
+    dotnet tool install --global dotnet-ef # if not already installed
+    dotnet ef database update
+    ```
+
+   > **Note:**  
+   > - Ensure your `appsettings.json` connection string is set correctly for your environment.
+   > - For SQLite, the database file will be created automatically.
+
+---
+
+## 3. Run the Frontend (React App)
+
+1. Open a new terminal and navigate to the client directory:
+
+    ```bash
+    cd corporatetaskgenerator.client
+    ```
+
+2. Install dependencies:
+
+    ```bash
+    npm install
+
+## 4. Using the App
+
+- Register a new user or log in with existing credentials.
+- Create, view, and manage tasks.
+- The app uses JWT authentication; tokens are stored in local storage and cleared on app close.
